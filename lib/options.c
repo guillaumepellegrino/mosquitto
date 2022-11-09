@@ -212,12 +212,14 @@ int mosquitto_tls_opts_set(struct mosquitto *mosq, int cert_reqs, const char *tl
 				|| !strcasecmp(tls_version, "tlsv1.2")
 				|| !strcasecmp(tls_version, "tlsv1.1")){
 
+			mosquitto__free(mosq->tls_version);
 			mosq->tls_version = mosquitto__strdup(tls_version);
 			if(!mosq->tls_version) return MOSQ_ERR_NOMEM;
 		}else{
 			return MOSQ_ERR_INVAL;
 		}
 	}else{
+		mosquitto__free(mosq->tls_version);
 		mosq->tls_version = mosquitto__strdup("tlsv1.2");
 		if(!mosq->tls_version) return MOSQ_ERR_NOMEM;
 	}
@@ -227,9 +229,11 @@ int mosquitto_tls_opts_set(struct mosquitto *mosq, int cert_reqs, const char *tl
 
 	if(ciphers){
 		if(!strcasecmp(mosq->tls_version, "tlsv1.3")){
+			mosquitto__free(mosq->tls_13_ciphers);
 			mosq->tls_13_ciphers = mosquitto__strdup(ciphers);
 			if(!mosq->tls_13_ciphers) return MOSQ_ERR_NOMEM;
 		}else{
+			mosquitto__free(mosq->tls_ciphers);
 			mosq->tls_ciphers = mosquitto__strdup(ciphers);
 			if(!mosq->tls_ciphers) return MOSQ_ERR_NOMEM;
 		}
